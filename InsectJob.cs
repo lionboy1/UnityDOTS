@@ -5,6 +5,7 @@ using Unity.Burst;
 using Unity.Mathematics;
 using Unity.Collections;
 using UnityEngine.Jobs;
+using UnityEngine.Profiling;
 
 [BurstCompile]
 public struct InsectParallelJob : IJobParallelFor
@@ -67,6 +68,7 @@ public class InsectJob : MonoBehaviour
     {
         if(jobsEnabled)
         {
+            Profiler.BeginSample("Insect Profile");
             NativeArray<float3> PositionArray = new NativeArray<float3>(insectList.Count, Allocator.TempJob);
             NativeArray<float> MovementArray = new NativeArray<float>(insectList.Count, Allocator.TempJob);
 
@@ -90,9 +92,10 @@ public class InsectJob : MonoBehaviour
                 insectList[i].tr.position = PositionArray[i];
                 insectList[i].VerticalMovement = MovementArray[i];
             }
-         
+            Profiler.EndSample();
             PositionArray.Dispose();
             MovementArray.Dispose();
+            
         }
         else
         {
@@ -109,7 +112,7 @@ public class InsectJob : MonoBehaviour
                     ins.tr.Rotate(0, -180, 0);
                     ins.VerticalMovement = +math.abs(ins.VerticalMovement);
                 }
-                  float someExpensiveCalculatedValue = 0f;
+                float someExpensiveCalculatedValue = 0f;
                 for(int i = 0; i < 1000; i++)
                 {
                     someExpensiveCalculatedValue = math.sqrt(173829);
