@@ -37,6 +37,7 @@ public class BugsJob : MonoBehaviour
     {
         if (_job)
         {
+            Profiler.BeginSample("Bug Job");
             NativeArray<float3> finalPosition = new NativeArray<float3>(_bugsList.Count, Allocator.TempJob);
             NativeArray<float> finalMovement = new NativeArray<float>(_bugsList.Count, Allocator.TempJob);
             //Populate arrays aboove with data to give to the job
@@ -68,6 +69,7 @@ public class BugsJob : MonoBehaviour
             Debug.Log("Job Complete");
             finalPosition.Dispose();
             finalMovement.Dispose();
+            Profiler.EndSample();
         }
         else
         {
